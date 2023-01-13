@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include <cstdlib>
+#include <random>
 #include <vector>
 #include <windows.h>
 #include "Macierze.h"
@@ -8,6 +8,7 @@ using namespace std;
 void slowo_macierze();
 void pierwsze_menu(int* a, int* b, int* c);
 void Wybor(int a, int b, int c);
+int main();
 
 template <class T>
 class Macierz
@@ -29,17 +30,18 @@ public:
 		losowazakres(b, c); 
 	}
 	~Macierz() {};
-	Macierz& operator+(Macierz& a);				
-	Macierz operator++();						
-	Macierz operator++(int);					
-	Macierz operator+(double a);				
-	Macierz& operator-(Macierz& a);				
-	Macierz operator--();						
-	Macierz operator--(int);					
-	Macierz operator-(double a);	
+	Macierz& operator+(Macierz& a);							
+	Macierz& operator-(Macierz& a);					
 	void klawiatura();
 	void losowe();
 	void losowazakres(int p, int q);
+	void wypisz();
+	void transpozycja();
+	void odwracanie();
+	void wyznacznik();
+	void stopień();
+	void Dopełnienie();
+	void menu();
 };
 
 template <class T>
@@ -53,34 +55,86 @@ void Macierz<T>::klawiatura() {
 			cin >> tab[i][j];
 		}
 	}
+	wypisz();
 }
 
 template <class T>
 void Macierz<T>::losowe() {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			tab[i][j] = rand() % 10;
+	unsigned int seed = time(NULL);
+	srand(seed);
+	if constexpr (is_same<T, int>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = rand() % 100;
+			}
 		}
 	}
+	else if constexpr (is_same<T, double>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = (double)rand() / (double)RAND_MAX * (double) rand();
+			}
+		}
+	}
+	else if constexpr (is_same<T, float>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = (float)rand() / (float)RAND_MAX * (float)rand();
+			}
+		}
+	}
+	wypisz();
 }
 
 template <class T>
 void Macierz<T>::losowazakres(int p, int q) {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			tab[i][j] = p + rand() % (q - p + 1);
+	unsigned int seed = time(NULL);
+	srand(seed);
+	if constexpr (is_same<T, int>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = p + (q - p) * rand() % 100;
+			}
 		}
 	}
+	else if constexpr (is_same<T, double>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = p + (q - p) * (double)rand() / (double)RAND_MAX * (double)rand();
+			}
+		}
+	}
+	else if constexpr (is_same<T, float>::value) {
+		for (int i = 0; i < n; i++) {
+			for (int j = 0; j < n; j++) {
+				tab[i][j] = p + (q - p) * (float)rand() / (float)RAND_MAX * (float)rand();
+			}
+		}
+	}
+	wypisz();
 }
 
-int main()
-{
-	int a = 0, b = 0, c = 0;
-	pierwsze_menu(&a, &b, &c);
-	Wybor(a, b, c);
+template <class T>
+void Macierz<T>::wypisz() {
 	system("cls");
-	return 0;
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab[i][j] << " ";
+		}
+		cout << endl;
+	}
+	Sleep(4000);
+	system("cls");
+	//menu();
 }
+
+class Fasada {
+
+};
+
+class Adapter {
+
+};
 
 void error() {
 	system("cls");
@@ -92,7 +146,7 @@ void error() {
 
 template <class T>
 void zakres(int a) {
-	int d = 0, e = 0;
+	T d = 0, e = 0;
 	slowo_macierze();
 	cout << "Wprowadz zakres:\n";
 	cin >> d >> e;
@@ -105,17 +159,20 @@ void Wybor(int a, int b, int c) {
 		else if (c == 2) Macierz<int> m(a, 0);
 		else if (c == 3) zakres<int>(a);
 		else error();
-	}else if (b == 2) {
+	}
+	else if (b == 2) {
 		if (c == 1) Macierz<double> m(a);
 		else if (c == 2) Macierz<double> m(a, 0);
 		else if (c == 3) zakres<double>(a);
 		else error();
-	}else if (b == 3) {
+	}
+	else if (b == 3) {
 		if (c == 1)	Macierz<float> m(a);
 		else if (c == 2) Macierz<float> m(a, 0);
 		else if (c == 3) zakres<float>(a);
 		else error();
-	}else error();
+	}
+	else error();
 }
 
 void slowo_macierze() {
@@ -132,4 +189,13 @@ void pierwsze_menu(int* a, int* b, int* c) {
 	slowo_macierze();
 	cout << "Wprowadzenie macierzy\n1 - Wpisywanie z klawiatury\n2 - Losowe uzupelnienie macierzy\n3 - Losowe uzupelnienie macierzy z zakresem\n";
 	cin >> *c;
+}
+
+int main()
+{
+	int a = 0, b = 0, c = 0;
+	pierwsze_menu(&a, &b, &c);
+	Wybor(a, b, c);
+	system("cls");
+	return 0;
 }
