@@ -2,6 +2,7 @@
 #include <random>
 #include <vector>
 #include <windows.h>
+#include <time.h>
 #include "Macierze.h"
 using namespace std;
 
@@ -15,32 +16,48 @@ class Macierz
 {
 private:
 	int n;
-	vector<std::vector<T>> tab;
+	vector<vector<T>> tab;
+	vector<vector<T>> tab_transp;
+	vector<vector<T>> tab_odwr;
+	vector<vector<T>> tab_dopeln;
+	T wyznacz;
+	int stop;
+
 public:
-	Macierz(int a) : n(a) { 
-		tab.resize(n, std::vector<T>(n));
-		klawiatura(); 
+	Macierz(int a) : n(a) {
+		tab.resize(n, vector<T>(n));
+		tab_transp.resize(n, vector<T>(n));
+		tab_odwr.resize(n, vector<T>(n));
+		//tab_dopeln.resize(n, vector<T>(n));
+		klawiatura();
 	}
-	Macierz(int a, int b) : n(a) { 
-		tab.resize(n, std::vector<T>(n)); 
+	Macierz(int a, int b) : n(a) {
+		tab.resize(n, vector<T>(n));
+		tab_transp.resize(n, vector<T>(n));
+		tab_odwr.resize(n, vector<T>(n));
+		//tab_dopeln.resize(n, vector<T>(n));
 		losowe();
 	}
-	Macierz(int a, T b, T c) : n(a) { 
-		tab.resize(n, std::vector<T>(n));
-		losowazakres(b, c); 
+	Macierz(int a, T b, T c) : n(a) {
+		tab.resize(n, vector<T>(n));
+		tab_transp.resize(n, vector<T>(n));
+		tab_odwr.resize(n, vector<T>(n));
+		//tab_dopeln.resize(n, vector<T>(n));
+		losowazakres(b, c);
 	}
 	~Macierz() {};
-	Macierz& operator+(Macierz& a);							
-	Macierz& operator-(Macierz& a);					
+	Macierz& operator+(Macierz& a);
+	Macierz& operator-(Macierz& a);
 	void klawiatura();
 	void losowe();
 	void losowazakres(int p, int q);
 	void wypisz();
 	void transpozycja();
 	void odwracanie();
+	void licz_wyznacznik();
 	void wyznacznik();
-	void stopień();
-	void Dopełnienie();
+	void stopien();
+	void dopelnienie() {}
 	void menu();
 };
 
@@ -72,7 +89,7 @@ void Macierz<T>::losowe() {
 	else if constexpr (is_same<T, double>::value) {
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
-				tab[i][j] = (double)rand() / (double)RAND_MAX * (double) rand();
+				tab[i][j] = (double)rand() / (double)RAND_MAX * (double)rand();
 			}
 		}
 	}
@@ -117,6 +134,7 @@ void Macierz<T>::losowazakres(int p, int q) {
 template <class T>
 void Macierz<T>::wypisz() {
 	system("cls");
+	cout << "Macierz pierwotna\n\n";
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cout << tab[i][j] << " ";
@@ -125,7 +143,121 @@ void Macierz<T>::wypisz() {
 	}
 	Sleep(4000);
 	system("cls");
-	//menu();
+	menu();
+}
+
+template <class T>
+void Macierz<T>::menu() {
+	slowo_macierze();
+	cout << "Wybierz dzailanie\n1 - wypisz macierz\n2 - transpozycja\n3 - odwracanie\n4 - wyznacznik(max 5x5)\n5 - stopien\n6 - dopelnienie\n7 - dodanie macierzy\n8 - odjecie macierzy\n\n";
+	int* a = new int;
+	cin >> *a;
+	switch (*a) {
+	case 1:
+		wypisz();
+		break;
+	case 2:
+		transpozycja();
+		break;
+	case 3:
+		odwracanie();
+		break;
+	case 4:
+		wyznacznik();
+		break;
+	case 5:
+		stopien();
+		break;
+	case 6:
+		dopelnienie();
+		break;
+	case 7:
+		break;
+	case 8:
+		break;
+	default:
+		menu();
+	}
+	delete a;
+}
+
+template <class T>
+void Macierz<T>::stopien() {
+	stop = n;
+	system("cls");
+	cout << "Stopień macierzy wynosi: " << stop;
+	Sleep(4000);
+	menu();
+}
+
+template <class T>
+void Macierz<T>::transpozycja() {
+	system("cls");
+	cout << "Macierz pierwotna:\n\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << "Macierz transponowana:\n\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			tab_transp[i][j] = tab[j][i];
+		}
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab_transp[i][j] << " ";
+		}
+		cout << endl;
+	}
+	Sleep(4000);
+	menu();
+}
+
+template <class T>
+void Macierz<T>::odwracanie() {
+	system("cls");
+	cout << "Macierz pierwotna:\n\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << "Macierz odwrocona:\n\n";
+}
+
+template <class T>
+void Macierz<T>::wyznacznik() {
+	system("cls");
+	licz_wyznacznik();
+	cout << "Wyznacznik macierzy wynosi:\n" << wyznacz;
+	Sleep(4000);
+	system("cls");
+	menu();
+}
+
+template <class T>
+void Macierz<T>::licz_wyznacznik() {
+	switch (n) {
+	case 1:
+		wyznacz = tab[0][0];
+		break;
+	case 2:
+		wyznacz = tab[0][0] * tab[1][1] - tab[0][1] * tab[1][0];
+		break;
+	case 3:
+		wyznacz = tab[0][0] * tab[1][1] * tab[2][2] + tab[1][0] * tab[2][1] * tab[0][2] + tab[2][0] * tab[0][1] * tab[1][2] - tab[0][1] * tab[1][0] * tab[2][2] - tab[2][0] * tab[1][1] * tab[0][2] - tab[0][0] * tab[2][1] * tab[1][2];
+		break;
+	case 4:
+		wyznacz = tab[0][0] * tab[1][1] * tab[2][2] * tab[3][3] + tab[1][0] * tab[2][1] * tab[0][3] * tab[3][2] + tab[2][0] * tab[0][2] * tab[1][3] * tab[3][1] + tab[3][0] * tab[0][1] * tab[1][2] * tab[2][3] - tab[3][0] * tab[2][1] * tab[1][2] * tab[0][3] - tab[2][0] * tab[1][1] * tab[0][2] * tab[3][3] - tab[1][0] * tab[0][1] * tab[3][2] * tab[2][3] - tab[3][1] * tab[0][0] * tab[2][2] * tab[1][3];
+		break;
+	case 5:
+		wyznacz = tab[0][0] * tab[1][1] * tab[2][2] * tab[3][3] * tab[4][4] + tab[1][0] * tab[2][1] * tab[3][2] * tab[4][3] * tab[0][4] + tab[2][0] * tab[3][1] * tab[4][2] * tab[0][3] * tab[1][4] + tab[3][0] * tab[4][1] * tab[0][2] * tab[1][3] * tab[2][4] + tab[4][0] * tab[0][1] * tab[1][2] * tab[2][3] * tab[3][4] - tab[0][4] * tab[1][3] * tab[2][2] * tab[3][1] * tab[4][0] - tab[0][3] * tab[1][2] * tab[2][1] * tab[3][0] * tab[4][4] - tab[0][2] * tab[1][1] * tab[2][0] * tab[3][4] * tab[4][3] - tab[0][1] * tab[1][0] * tab[2][4] * tab[3][3] * tab[4][2] - tab[0][0] * tab[1][4] * tab[2][3] * tab[3][2] * tab[4][1];
+		break;
+	}
 }
 
 class Fasada {
@@ -136,9 +268,12 @@ class Adapter {
 
 };
 
+
+
+
 void error() {
 	system("cls");
-	cout << "\n\tEEEEE   RRRRRR   RRRRRR     OOO     OOO   RRRRRR\n\tE       R     R  R     R   O   O   O   O  R     R\n\tEEEEE   RRRRRR   RRRRRR    O   O   O   O  RRRRRR\n\tE       R   R    R   R     O   O   O   O  R   R\n\tEEEEE   R    R   R    R     OOO     OOO   R    R";
+	cout << "\n\tEEEEE   RRRRRR   RRRRRR     OOO    RRRRRR\n\tE       R     R  R     R   O   O   R     R\n\tEEEEE   RRRRRR   RRRRRR    O   O   RRRRRR\n\tE       R   R    R   R     O   O   R   R\n\tEEEEE   R    R   R    R     OOO    R    R";
 	Sleep(4000);
 	system("cls");
 	main();
@@ -196,6 +331,5 @@ int main()
 	int a = 0, b = 0, c = 0;
 	pierwsze_menu(&a, &b, &c);
 	Wybor(a, b, c);
-	system("cls");
 	return 0;
 }
