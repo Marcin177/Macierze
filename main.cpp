@@ -8,19 +8,19 @@ class Macierz
 {
 private:
 	int n;
-	int **tab = new int*[n];
 	long long int **tablica_dopelnien = new long long int*[n];
 	long double **tablica_odwrotna = new long double*[n];
 	long long int wyznacz;
 	int stop;
 
 public:
+    int **tab = new int*[n];
 	Macierz(int a) : n(a), wyznacz(0), stop(a) {
 		losowe();
 	}
 	~Macierz() {};
-	Macierz& operator+(Macierz& a);
-	Macierz& operator-(Macierz& a);
+	Macierz& operator+=(Macierz& a);
+	Macierz& operator-=(Macierz& a);
 	void losowe();
 	void wypisz();
 	void transpozycja();
@@ -29,7 +29,27 @@ public:
 	void stopien();
 	void dopelnienie();
 	void menu();
+	void wypiszdod();
+	void wypiszodej();
+	void zamien(int a, int b);
+	void adapter ();
 };
+
+Macierz& Macierz::operator+=(Macierz& a){
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            this->tab[i][j] += a.tab[i][j];
+        }
+    }
+}
+
+Macierz& Macierz::operator-=(Macierz& a){
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            this->tab[i][j] -= a.tab[i][j];
+        }
+    }
+}
 
 void Macierz::losowe(){
 	unsigned int seed = time(NULL);
@@ -114,7 +134,7 @@ void Macierz::wyznacznik() {
 
 void Macierz::stopien() {
 	system("cls");
-	cout << "Stopieñ macierzy wynosi: " << stop;
+	cout << "Stopien macierzy wynosi: " << stop;
 	cin.get();
 }
 
@@ -192,6 +212,57 @@ void Macierz::odwracanie(){
     cin.get();
 }
 
+void Macierz::zamien(int a, int b){
+    system("cls");
+    wypisz();
+    int i = 0;
+    cout << "Podaj liczbe aby zmienic warosc tab["<< a << "][" << b<< "] = ";
+    cin >> i;
+    tab[a][b] = i;
+    wypisz();
+    cin.get();
+}
+
+void Macierz::adapter(){
+    system("cls");
+    int a;
+    do{
+    cout << "Podaj numer liczby od 1 - " << n*n << " : ";
+    cin >> a;
+    } while (a < 0 && a > n*n);
+    int b = a/n;
+    int c = (a%n)-1;
+    cout << "W podanym numerze zapisana jest wartosc: " << tab[b][c];
+    cin.get();
+    cin.get();
+}
+
+void Macierz::wypiszdod() {
+	system("cls");
+	cout << "Macierz dodana\n\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab[i][j] << " ";
+		}
+		cout << endl << endl;
+	}
+	cin.get();
+	return;
+}
+
+void Macierz::wypiszodej() {
+	system("cls");
+	cout << "Macierz odjeta\n\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab[i][j] << " ";
+		}
+		cout << endl << endl;
+	}
+	cin.get();
+	return;
+}
+
 void Macierz::wypisz() {
 	system("cls");
 	cout << "Macierz pierwotna\n\n";
@@ -219,8 +290,14 @@ int main()
 	M.wyznacznik();
 	M.stopien();
 	M.dopelnienie();
-	M.odwracanie(); // Czasem dzia³a, a czasem nie. Problem z iloœci¹ bajtów liczby :(
+	//M.odwracanie(); // Czasem dziala, a czasem nie. Problem z iloscia bajtów liczby :(
+    M.zamien(0,0);
+    M.adapter();
     Macierz K(n);
     K.wypisz();
+    K += M;
+    K.wypiszdod();
+    K -= M;
+    K.wypiszodej();
     return 0;
 }
