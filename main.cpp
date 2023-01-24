@@ -1,16 +1,22 @@
 #include <iostream>
 #include <time.h>
 #include <cstring>
+#include <iomanip>
+#include <cmath>
+#include <fstream>
 
 using namespace std;
+
+const double eps = 1e-12;
 
 class Macierz
 {
 private:
 	int n;
 	long long int **tablica_dopelnien = new long long int*[n];
-	long double **tablica_odwrotna = new long double*[n];
+	double **tablica_odwrotna = new double*[n];
 	long long int wyznacz;
+	int **tab_z_pliku = new int*[n];
 	int stop;
 
 public:
@@ -33,6 +39,10 @@ public:
 	void wypiszodej();
 	void zamien(int a, int b);
 	void adapter ();
+	void inport_file ();
+	void export_file ();
+	void wypisz_z_pliku();
+
 };
 
 Macierz& Macierz::operator+=(Macierz& a){
@@ -182,34 +192,98 @@ void Macierz::dopelnienie() {
     cin.get();
 }
 
+bool ludist ( int n, int ** A )
+{
+  int i, j, k;
+
+  for( k = 0; k < n - 1; k++ )
+  {
+    if( fabs ( A [ k ][ k ] ) < eps ) return false;
+
+    for( i = k + 1; i < n; i++ )
+      A [ i ][ k ] /= A [ k ][ k ];
+
+    for( i = k + 1; i < n; i++ )
+      for( j = k + 1; j < n; j++ )
+        A [ i ][ j ] -= A [ i ][ k ] * A [ k ][ j ];
+  }
+
+  return true;
+}
+
+bool lusolve ( int k, int n, int ** A, double ** X )
+{
+  int    i, j;
+  double s;
+
+  for( i = 1; i < n; i++ )
+  {
+    s = 0;
+
+    for( j = 0; j < i; j++ ) s += A [ i ][ j ] * X [ j ][ k ];
+
+    X [ i ][ k ] -= s;
+  }
+
+  if( fabs ( A [ n-1 ][ n-1 ] ) < eps ) return false;
+
+  X [ n-1 ][ k ] /= A [ n-1 ][ n-1 ];
+
+  for( i = n - 2; i >= 0; i-- )
+  {
+    s = 0;
+
+    for( j = i + 1; j < n; j++ ) s += A [ i ][ j ] * X [ j ][ k ];
+
+    if( fabs ( A [ i ][ i ] ) < eps ) return false;
+
+    X [ i ][ k ] = ( X [ i ][ k ] - s ) / A [ i ][ i ];
+  }
+
+  return true;
+}
+
 void Macierz::odwracanie(){
-    if (wyznacz == 0){
-        return;
-    }
     system("cls");
     wypisz();
+    int **tab_temp = new int*[n];
+    cout << "Macierz odwrotna: \n\n";
+    bool ok;
     for (int i = 0; i < n; i++) {
-        tablica_odwrotna[i] = new long double[n];
+        tablica_odwrotna[i] = new double[n];
+        tab_temp[i] = new int[n];
     }
-    cout << "Macierz odwrotna:\n\n";
-    long double det = 1;
-    for (int i = 0; i < n; i++) {
-        det *= tab[i][i];
+    for(int i = 0; i < n; i++ )
+    {
+      for(int j = 0; j < n; j++ ) tab_temp[ i ][ j ] = tab[i][j];
     }
-    det = 1 / det;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            tablica_odwrotna[i][j] = tablica_dopelnien[i][j] * det;
-        }
+  if( ludist ( n, tab_temp) )
+  {
+    for(int i = 0; i < n; i++ )
+    {
+      for(int j = 0; j < n; j++ ) tablica_odwrotna[ i ][ j ] = 0;
+      tablica_odwrotna[ i ][ i ] = 1;
     }
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cout << tablica_odwrotna[j][i] << " ";
-        }
-        cout << endl;
+    ok = true;
+    for(int i = 0; i < n; i++ )
+      if( ! lusolve ( i, n, tab_temp, tablica_odwrotna ) )
+      {
+        ok = false;
+        break;
+      }
+  }
+  else ok = false;
+  if( ok )
+  {
+    for(int i = 0; i < n; i++ )
+    {
+      for(int j = 0; j < n; j++ )
+        cout << setw ( 10 ) << tablica_odwrotna [ i ][ j ] << " ";
+      cout << endl;
     }
-    cin.get();
+  }
+  else cout << "DZIELNIK ZERO\n";
+  cin.get();
 }
 
 void Macierz::zamien(int a, int b){
@@ -229,17 +303,66 @@ void Macierz::adapter(){
     do{
     cout << "Podaj numer liczby od 1 - " << n*n << " : ";
     cin >> a;
-    } while (a < 0 && a > n*n);
-    int b = a/n;
-    int c = (a%n)-1;
+    }while (a < 1 || a > n*n);
+    int b = (a-1)/n;
+    int c = (a-1)%n;
     cout << "W podanym numerze zapisana jest wartosc: " << tab[b][c];
     cin.get();
     cin.get();
 }
 
+void Macierz::inport_file(){
+    system ("cls");
+    cout << "Importowanie macierzy\n\n";
+    ofstream file;
+    file.open("macierz.txt");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            file << tab[i][j] << " ";
+        }
+        file << std::endl;
+    }
+    file.close();
+    cout << "Macierz zaimportowana";
+    system("macierz.txt");
+    cin.get();
+}
+
+void Macierz::export_file() {
+    system("cls");
+    cout << "Eksportowanie macierzy\n\n";
+    for (int i = 0; i < n; i++) {
+        tab_z_pliku[i] = new int[n];
+    }
+    ifstream file;
+    file.open("macierz.txt");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            file >> tab_z_pliku[i][j];
+        }
+    }
+    file.close();
+    cout << "Macierz zaeksportowana\n\n";
+    wypisz_z_pliku();
+    cin.get();
+}
+
+void Macierz::wypisz_z_pliku(){
+
+	cout << "Macierz eksportowanan\n";
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cout << tab_z_pliku[i][j] << " ";
+		}
+		cout << endl << endl;
+	}
+	cin.get();
+	return;
+}
+
 void Macierz::wypiszdod() {
 	system("cls");
-	cout << "Macierz dodana\n\n";
+	cout << "Macierz dodana\n";
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cout << tab[i][j] << " ";
@@ -283,6 +406,8 @@ cin >> *n;
 
 int main()
 {
+    unsigned int seed = time(NULL);
+	srand(seed);
 	int n = 0;
 	podaj_wielkosc(&n);
 	Macierz M(n);
@@ -290,8 +415,8 @@ int main()
 	M.wyznacznik();
 	M.stopien();
 	M.dopelnienie();
-	//M.odwracanie(); // Czasem dziala, a czasem nie. Problem z iloscia bajtów liczby :(
-    M.zamien(0,0);
+	M.odwracanie();
+    M.zamien(rand()  % n, rand() % n);
     M.adapter();
     Macierz K(n);
     K.wypisz();
@@ -299,5 +424,7 @@ int main()
     K.wypiszdod();
     K -= M;
     K.wypiszodej();
+    M.inport_file();
+    K.export_file();
     return 0;
 }
