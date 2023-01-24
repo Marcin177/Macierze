@@ -313,9 +313,9 @@ void Macierz::adapter() {
     cin.get();
 }
 
-void Macierz::inport_file() {
+void Macierz::export_file() {
     system("cls");
-    cout << "Importowanie macierzy\n\n";
+    cout << "Eksportowanie macierzy\n\n";
     ofstream file;
     file.open("macierz.txt");
     for (int i = 0; i < n; i++) {
@@ -325,14 +325,14 @@ void Macierz::inport_file() {
         file << std::endl;
     }
     file.close();
-    cout << "Macierz zaimportowana";
+    cout << "Macierz zaeksportowana";
     system("macierz.txt");
     cin.get();
 }
 
-void Macierz::export_file() {
+void Macierz::inport_file() {
     system("cls");
-    cout << "Eksportowanie macierzy\n\n";
+    cout << "Inportowanie macierzy\n\n";
     for (int i = 0; i < n; i++) {
         tab_z_pliku[i] = new int[n];
     }
@@ -344,14 +344,14 @@ void Macierz::export_file() {
         }
     }
     file.close();
-    cout << "Macierz zaeksportowana\n\n";
+    cout << "Macierz zainportowana\n\n";
     wypisz_z_pliku();
     cin.get();
 }
 
 void Macierz::wypisz_z_pliku() {
 
-    cout << "Macierz eksportowanana\n";
+    cout << "Macierz inportowanana\n";
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << tab_z_pliku[i][j] << " ";
@@ -372,7 +372,6 @@ void Macierz::wypiszdod() {
         cout << endl << endl;
     }
     cin.get();
-    return;
 }
 
 void Macierz::wypiszodej() {
@@ -385,7 +384,6 @@ void Macierz::wypiszodej() {
         cout << endl << endl;
     }
     cin.get();
-    return;
 }
 
 void Macierz::wypisz() {
@@ -421,12 +419,11 @@ int main()
     M.zamien(rand() % n, rand() % n);
     M.adapter();
     Macierz K(n);
-    K.wypisz();
     K += M;
     K.wypiszdod();
     K -= M;
     K.wypiszodej();
-    M.inport_file();
-    K.export_file();
+    M.export_file();
+    K.inport_file();
     return 0;
 }
