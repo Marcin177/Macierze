@@ -24,7 +24,18 @@ public:
     Macierz(int a) : n(a), wyznacz(0), stop(a) {
         losowe();
     }
-    ~Macierz() {};
+    ~Macierz() {
+    for (int i = 0; i < n; i++){
+        delete[] tablica_dopelnien[i];
+        delete[] tablica_odwrotna[i];
+        delete[] tab[i];
+        delete[] tab_z_pliku[i];
+    }
+    delete[] tablica_dopelnien;
+    delete[] tablica_odwrotna;
+    delete[] tab;
+    delete[] tab_z_pliku;
+    };
     Macierz& operator+=(Macierz& a);
     Macierz& operator-=(Macierz& a);
     void losowe();
@@ -69,7 +80,7 @@ void Macierz::losowe() {
     for (int i = 0; i < n; i++) {
         tab[i] = new int[n];
         for (int j = 0; j < n; j++) {
-            tab[i][j] = rand() % 100;
+            tab[i][j] = rand();
         }
     }
     wypisz();
@@ -285,6 +296,10 @@ void Macierz::odwracanie() {
         }
     }
     else cout << "DZIELNIK ZERO\n";
+    for (int i = 0; i < n; i++) {
+        delete[] tab_temp[i];
+    }
+    delete[] tab_temp;
     cin.get();
 }
 
