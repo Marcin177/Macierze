@@ -349,7 +349,7 @@ void Macierz::export_file() {
 
 void Macierz::wypisz_z_pliku(){
 
-	cout << "Macierz eksportowanan\n";
+	cout << "Macierz eksportowanana\n";
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
 			cout << tab_z_pliku[i][j] << " ";
