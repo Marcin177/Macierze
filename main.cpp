@@ -325,7 +325,9 @@ void Macierz::export_file() {
         file << std::endl;
     }
     file.close();
-    cout << "Macierz zaeksportowana";
+    cout << "Macierz zaeksportowana\n\n";
+    cout << "Zawartosc pliku macierz.txt\n";
+    system("type macierz.txt");
     system("macierz.txt");
     cin.get();
 }
