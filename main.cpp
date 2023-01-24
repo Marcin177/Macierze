@@ -12,58 +12,60 @@ const double eps = 1e-12;
 class Macierz
 {
 private:
-	int n;
-	long long int **tablica_dopelnien = new long long int*[n];
-	double **tablica_odwrotna = new double*[n];
-	long long int wyznacz;
-	int **tab_z_pliku = new int*[n];
-	int stop;
+    int n;
+    long long int** tablica_dopelnien = new long long int* [n];
+    double** tablica_odwrotna = new double* [n];
+    long long int wyznacz;
+    int** tab_z_pliku = new int* [n];
+    int stop;
 
 public:
-    int **tab = new int*[n];
-	Macierz(int a) : n(a), wyznacz(0), stop(a) {
-		losowe();
-	}
-	~Macierz() {};
-	Macierz& operator+=(Macierz& a);
-	Macierz& operator-=(Macierz& a);
-	void losowe();
-	void wypisz();
-	void transpozycja();
-	void odwracanie();
-	void wyznacznik();
-	void stopien();
-	void dopelnienie();
-	void menu();
-	void wypiszdod();
-	void wypiszodej();
-	void zamien(int a, int b);
-	void adapter ();
-	void inport_file ();
-	void export_file ();
-	void wypisz_z_pliku();
+    int** tab = new int* [n];
+    Macierz(int a) : n(a), wyznacz(0), stop(a) {
+        losowe();
+    }
+    ~Macierz() {};
+    Macierz& operator+=(Macierz& a);
+    Macierz& operator-=(Macierz& a);
+    void losowe();
+    void wypisz();
+    void transpozycja();
+    void odwracanie();
+    void wyznacznik();
+    void stopien();
+    void dopelnienie();
+    void menu();
+    void wypiszdod();
+    void wypiszodej();
+    void zamien(int a, int b);
+    void adapter();
+    void inport_file();
+    void export_file();
+    void wypisz_z_pliku();
 
 };
 
-Macierz& Macierz::operator+=(Macierz& a){
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
+Macierz& Macierz::operator+=(Macierz& a) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             this->tab[i][j] += a.tab[i][j];
         }
     }
+    return *this;
 }
 
-Macierz& Macierz::operator-=(Macierz& a){
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
+Macierz& Macierz::operator-=(Macierz& a) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             this->tab[i][j] -= a.tab[i][j];
         }
     }
+    return *this;
 }
 
-void Macierz::losowe(){
-	unsigned int seed = time(NULL);
-	srand(seed);
+void Macierz::losowe() {
+    unsigned int seed = time(NULL);
+    srand(seed);
     for (int i = 0; i < n; i++) {
         tab[i] = new int[n];
         for (int j = 0; j < n; j++) {
@@ -73,29 +75,29 @@ void Macierz::losowe(){
     wypisz();
 }
 
-void Macierz::transpozycja(){
+void Macierz::transpozycja() {
     wypisz();
-    int **tab_transp = new int*[n];
+    int** tab_transp = new int* [n];
     cout << "Macierz transponowana:\n\n";
-	for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++) {
         tab_transp[i] = new int[n];
-		for (int j = 0; j < n; j++) {
-			tab_transp[i][j] = tab[j][i];
-			cout << tab_transp[i][j] << " ";
-		}
+        for (int j = 0; j < n; j++) {
+            tab_transp[i][j] = tab[j][i];
+            cout << tab_transp[i][j] << " ";
+        }
         cout << endl << endl;
-	}
-	for (int i = 0; i < n; i++) {
+    }
+    for (int i = 0; i < n; i++) {
         delete[] tab_transp[i];
     }
     delete[] tab_transp;
     cin.get();
 }
 
-int licz_wyznacznik(int **tab, int n) {
-	long long int det = 1;
+int licz_wyznacznik(int** tab, int n) {
+    long long int det = 1;
     long long int temp;
-    int **tempTab = new int*[n];
+    int** tempTab = new int* [n];
     for (int i = 0; i < n; i++) {
         tempTab[i] = new int[n];
         memcpy(tempTab[i], tab[i], sizeof(int) * n);
@@ -136,21 +138,21 @@ int licz_wyznacznik(int **tab, int n) {
 }
 
 void Macierz::wyznacznik() {
-	system("cls");
-	wyznacz = licz_wyznacznik(tab, n);
-	cout << "Wyznacznik macierzy wynosi:\n" << wyznacz;
-	cin.get();
+    system("cls");
+    wyznacz = licz_wyznacznik(tab, n);
+    cout << "Wyznacznik macierzy wynosi:\n" << wyznacz;
+    cin.get();
 }
 
 void Macierz::stopien() {
-	system("cls");
-	cout << "Stopien macierzy wynosi: " << stop;
-	cin.get();
+    system("cls");
+    cout << "Stopien macierzy wynosi: " << stop;
+    cin.get();
 }
 
 void Macierz::dopelnienie() {
     system("cls");
-    int **tablica_dop = new int*[n];
+    int** tablica_dop = new int* [n];
     for (int i = 0; i < n; i++) {
         tablica_dopelnien[i] = new long long int[n];
         tablica_dop[i] = new int[n];
@@ -158,7 +160,7 @@ void Macierz::dopelnienie() {
     int znak = 1;
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
-            int **temp = new int*[n - 1];
+            int** temp = new int* [n - 1];
             for (int k = 0; k < n - 1; k++) {
                 temp[k] = new int[n - 1];
             }
@@ -179,140 +181,140 @@ void Macierz::dopelnienie() {
         }
     }
     cout << "Macierz dopelnien:\n\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tablica_dopelnien[i][j] << " ";
-		}
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << tablica_dopelnien[i][j] << " ";
+        }
         cout << endl << endl;
-	}
-	for (int i = 0; i < n; i++) {
+    }
+    for (int i = 0; i < n; i++) {
         delete[] tablica_dopelnien[i];
     }
     delete[] tablica_dopelnien;
     cin.get();
 }
 
-bool ludist ( int n, int ** A )
+bool ludist(int n, int** A)
 {
-  int i, j, k;
+    int i, j, k;
 
-  for( k = 0; k < n - 1; k++ )
-  {
-    if( fabs ( A [ k ][ k ] ) < eps ) return false;
+    for (k = 0; k < n - 1; k++)
+    {
+        if (fabs(A[k][k]) < eps) return false;
 
-    for( i = k + 1; i < n; i++ )
-      A [ i ][ k ] /= A [ k ][ k ];
+        for (i = k + 1; i < n; i++)
+            A[i][k] /= A[k][k];
 
-    for( i = k + 1; i < n; i++ )
-      for( j = k + 1; j < n; j++ )
-        A [ i ][ j ] -= A [ i ][ k ] * A [ k ][ j ];
-  }
+        for (i = k + 1; i < n; i++)
+            for (j = k + 1; j < n; j++)
+                A[i][j] -= A[i][k] * A[k][j];
+    }
 
-  return true;
+    return true;
 }
 
-bool lusolve ( int k, int n, int ** A, double ** X )
+bool lusolve(int k, int n, int** A, double** X)
 {
-  int    i, j;
-  double s;
+    int    i, j;
+    double s;
 
-  for( i = 1; i < n; i++ )
-  {
-    s = 0;
+    for (i = 1; i < n; i++)
+    {
+        s = 0;
 
-    for( j = 0; j < i; j++ ) s += A [ i ][ j ] * X [ j ][ k ];
+        for (j = 0; j < i; j++) s += A[i][j] * X[j][k];
 
-    X [ i ][ k ] -= s;
-  }
+        X[i][k] -= s;
+    }
 
-  if( fabs ( A [ n-1 ][ n-1 ] ) < eps ) return false;
+    if (fabs(A[n - 1][n - 1]) < eps) return false;
 
-  X [ n-1 ][ k ] /= A [ n-1 ][ n-1 ];
+    X[n - 1][k] /= A[n - 1][n - 1];
 
-  for( i = n - 2; i >= 0; i-- )
-  {
-    s = 0;
+    for (i = n - 2; i >= 0; i--)
+    {
+        s = 0;
 
-    for( j = i + 1; j < n; j++ ) s += A [ i ][ j ] * X [ j ][ k ];
+        for (j = i + 1; j < n; j++) s += A[i][j] * X[j][k];
 
-    if( fabs ( A [ i ][ i ] ) < eps ) return false;
+        if (fabs(A[i][i]) < eps) return false;
 
-    X [ i ][ k ] = ( X [ i ][ k ] - s ) / A [ i ][ i ];
-  }
+        X[i][k] = (X[i][k] - s) / A[i][i];
+    }
 
-  return true;
+    return true;
 }
 
-void Macierz::odwracanie(){
+void Macierz::odwracanie() {
     system("cls");
     wypisz();
-    int **tab_temp = new int*[n];
+    int** tab_temp = new int* [n];
     cout << "Macierz odwrotna: \n\n";
     bool ok;
     for (int i = 0; i < n; i++) {
         tablica_odwrotna[i] = new double[n];
         tab_temp[i] = new int[n];
     }
-    for(int i = 0; i < n; i++ )
+    for (int i = 0; i < n; i++)
     {
-      for(int j = 0; j < n; j++ ) tab_temp[ i ][ j ] = tab[i][j];
+        for (int j = 0; j < n; j++) tab_temp[i][j] = tab[i][j];
     }
-  if( ludist ( n, tab_temp) )
-  {
-    for(int i = 0; i < n; i++ )
+    if (ludist(n, tab_temp))
     {
-      for(int j = 0; j < n; j++ ) tablica_odwrotna[ i ][ j ] = 0;
-      tablica_odwrotna[ i ][ i ] = 1;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++) tablica_odwrotna[i][j] = 0;
+            tablica_odwrotna[i][i] = 1;
+        }
+        ok = true;
+        for (int i = 0; i < n; i++)
+            if (!lusolve(i, n, tab_temp, tablica_odwrotna))
+            {
+                ok = false;
+                break;
+            }
     }
-    ok = true;
-    for(int i = 0; i < n; i++ )
-      if( ! lusolve ( i, n, tab_temp, tablica_odwrotna ) )
-      {
-        ok = false;
-        break;
-      }
-  }
-  else ok = false;
-  if( ok )
-  {
-    for(int i = 0; i < n; i++ )
+    else ok = false;
+    if (ok)
     {
-      for(int j = 0; j < n; j++ )
-        cout << setw ( 10 ) << tablica_odwrotna [ i ][ j ] << " ";
-      cout << endl;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+                cout << setw(10) << tablica_odwrotna[i][j] << " ";
+            cout << endl;
+        }
     }
-  }
-  else cout << "DZIELNIK ZERO\n";
-  cin.get();
+    else cout << "DZIELNIK ZERO\n";
+    cin.get();
 }
 
-void Macierz::zamien(int a, int b){
+void Macierz::zamien(int a, int b) {
     system("cls");
     wypisz();
     int i = 0;
-    cout << "Podaj liczbe aby zmienic warosc tab["<< a << "][" << b<< "] = ";
+    cout << "Podaj liczbe aby zmienic warosc tab[" << a << "][" << b << "] = ";
     cin >> i;
     tab[a][b] = i;
     wypisz();
     cin.get();
 }
 
-void Macierz::adapter(){
+void Macierz::adapter() {
     system("cls");
     int a;
-    do{
-    cout << "Podaj numer liczby od 1 - " << n*n << " : ";
-    cin >> a;
-    }while (a < 1 || a > n*n);
-    int b = (a-1)/n;
-    int c = (a-1)%n;
+    do {
+        cout << "Podaj numer liczby od 1 - " << n * n << " : ";
+        cin >> a;
+    } while (a < 1 || a > n * n);
+    int b = (a - 1) / n;
+    int c = (a - 1) % n;
     cout << "W podanym numerze zapisana jest wartosc: " << tab[b][c];
     cin.get();
     cin.get();
 }
 
-void Macierz::inport_file(){
-    system ("cls");
+void Macierz::inport_file() {
+    system("cls");
     cout << "Importowanie macierzy\n\n";
     ofstream file;
     file.open("macierz.txt");
@@ -347,76 +349,76 @@ void Macierz::export_file() {
     cin.get();
 }
 
-void Macierz::wypisz_z_pliku(){
+void Macierz::wypisz_z_pliku() {
 
-	cout << "Macierz eksportowanana\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tab_z_pliku[i][j] << " ";
-		}
-		cout << endl << endl;
-	}
-	cin.get();
-	return;
+    cout << "Macierz eksportowanana\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << tab_z_pliku[i][j] << " ";
+        }
+        cout << endl << endl;
+    }
+    cin.get();
+    return;
 }
 
 void Macierz::wypiszdod() {
-	system("cls");
-	cout << "Macierz dodana\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tab[i][j] << " ";
-		}
-		cout << endl << endl;
-	}
-	cin.get();
-	return;
+    system("cls");
+    cout << "Macierz dodana\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << tab[i][j] << " ";
+        }
+        cout << endl << endl;
+    }
+    cin.get();
+    return;
 }
 
 void Macierz::wypiszodej() {
-	system("cls");
-	cout << "Macierz odjeta\n\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tab[i][j] << " ";
-		}
-		cout << endl << endl;
-	}
-	cin.get();
-	return;
+    system("cls");
+    cout << "Macierz odjeta\n\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << tab[i][j] << " ";
+        }
+        cout << endl << endl;
+    }
+    cin.get();
+    return;
 }
 
 void Macierz::wypisz() {
-	system("cls");
-	cout << "Macierz pierwotna\n\n";
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			cout << tab[i][j] << " ";
-		}
-		cout << endl << endl;
-	}
-	cin.get();
-	return;
+    system("cls");
+    cout << "Macierz pierwotna\n\n";
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << tab[i][j] << " ";
+        }
+        cout << endl << endl;
+    }
+    cin.get();
+    return;
 }
 
-void podaj_wielkosc(int *n){
-cout << "Podaj rozmiar macierzy NxN\n";
-cin >> *n;
+void podaj_wielkosc(int* n) {
+    cout << "Podaj rozmiar macierzy NxN\n";
+    cin >> *n;
 }
 
 int main()
 {
     unsigned int seed = time(NULL);
-	srand(seed);
-	int n = 0;
-	podaj_wielkosc(&n);
-	Macierz M(n);
-	M.transpozycja();
-	M.wyznacznik();
-	M.stopien();
-	M.dopelnienie();
-	M.odwracanie();
-    M.zamien(rand()  % n, rand() % n);
+    srand(seed);
+    int n = 0;
+    podaj_wielkosc(&n);
+    Macierz M(n);
+    M.transpozycja();
+    M.wyznacznik();
+    M.stopien();
+    M.dopelnienie();
+    M.odwracanie();
+    M.zamien(rand() % n, rand() % n);
     M.adapter();
     Macierz K(n);
     K.wypisz();
