@@ -1,3 +1,8 @@
+// Programowanie zaawansowane - Projekt
+// Macierze
+// Grupa P1
+// Marcin Gonciarz
+// Antoni Garczyñski
 #include <iostream>
 #include <time.h>
 #include <cstring>
@@ -13,28 +18,18 @@ class Macierz
 {
 private:
     int n;
-    long long int** tablica_dopelnien = new long long int* [n];
-    double** tablica_odwrotna = new double* [n];
     long long int wyznacz;
-    int** tab_z_pliku = new int* [n];
     int stop;
-
-public:
     int** tab = new int* [n];
+public:
     Macierz(int a) : n(a), wyznacz(0), stop(a) {
         losowe();
     }
     ~Macierz() {
-    for (int i = 0; i < n; i++){
-        delete[] tablica_dopelnien[i];
-        delete[] tablica_odwrotna[i];
-        delete[] tab[i];
-        delete[] tab_z_pliku[i];
-    }
-    delete[] tablica_dopelnien;
-    delete[] tablica_odwrotna;
-    delete[] tab;
-    delete[] tab_z_pliku;
+        for (int i = 0; i < n; i++) {
+            delete[] tab[i];
+        }
+        delete[] tab;
     };
     Macierz& operator+=(Macierz& a);
     Macierz& operator-=(Macierz& a);
@@ -45,14 +40,13 @@ public:
     void wyznacznik();
     void stopien();
     void dopelnienie();
-    void menu();
     void wypiszdod();
     void wypiszodej();
     void zamien(int a, int b);
     void adapter();
-    void inport_file();
+    void import_file();
     void export_file();
-    void wypisz_z_pliku();
+    void wypisz_z_pliku(int **tab_z_pliku);
 
 };
 
@@ -163,10 +157,9 @@ void Macierz::stopien() {
 
 void Macierz::dopelnienie() {
     system("cls");
-    int** tablica_dop = new int* [n];
+    long long int** tablica_dopelnien = new long long int* [n];
     for (int i = 0; i < n; i++) {
         tablica_dopelnien[i] = new long long int[n];
-        tablica_dop[i] = new int[n];
     }
     int znak = 1;
     for (int i = 0; i < n; i++) {
@@ -259,6 +252,7 @@ bool lusolve(int k, int n, int** A, double** X)
 void Macierz::odwracanie() {
     system("cls");
     wypisz();
+    double** tablica_odwrotna = new double* [n];
     int** tab_temp = new int* [n];
     cout << "Macierz odwrotna: \n\n";
     bool ok;
@@ -298,8 +292,10 @@ void Macierz::odwracanie() {
     else cout << "DZIELNIK ZERO\n";
     for (int i = 0; i < n; i++) {
         delete[] tab_temp[i];
+        delete[] tablica_odwrotna[i];
     }
     delete[] tab_temp;
+    delete[] tablica_odwrotna;
     cin.get();
 }
 
@@ -347,9 +343,10 @@ void Macierz::export_file() {
     cin.get();
 }
 
-void Macierz::inport_file() {
+void Macierz::import_file() {
     system("cls");
-    cout << "Inportowanie macierzy\n\n";
+    int** tab_z_pliku = new int* [n];
+    cout << "Importowanie macierzy\n\n";
     for (int i = 0; i < n; i++) {
         tab_z_pliku[i] = new int[n];
     }
@@ -361,14 +358,18 @@ void Macierz::inport_file() {
         }
     }
     file.close();
-    cout << "Macierz zainportowana\n\n";
-    wypisz_z_pliku();
+    cout << "Macierz zaimportowana\n\n";
+    wypisz_z_pliku(tab_z_pliku);
+    for (int i = 0; i < n; i++) {
+        delete[] tab_z_pliku[i];
+    }
+    delete[] tab_z_pliku;
     cin.get();
 }
 
-void Macierz::wypisz_z_pliku() {
+void Macierz::wypisz_z_pliku(int **tab_z_pliku) {
 
-    cout << "Macierz inportowanana\n";
+    cout << "Macierz importowanana\n";
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             cout << tab_z_pliku[i][j] << " ";
@@ -435,12 +436,17 @@ int main()
     M.odwracanie();
     M.zamien(rand() % n, rand() % n);
     M.adapter();
+    system("cls");
+    cout << "Tworzenie drugiego obiektu";
+    cin.get();
     Macierz K(n);
     K += M;
     K.wypiszdod();
     K -= M;
     K.wypiszodej();
     M.export_file();
-    K.inport_file();
+    K.import_file();
+    system("cls");
+    cout << "\t\t------------------------------\n\t\t| Programowanie zaawansowane |\n\t\t------------------------------\n\t\t|    Projekt   |   Grupa P1  |\n\t\t------------------------------\n\t\t|           Macierze         |\n\t\t------------------------------\n\t\t|    Antoni    |    Marcin   |\n\t\t|  Garczyñski  |   Gonciarz  |\n\t\t------------------------------\n";
     return 0;
 }
